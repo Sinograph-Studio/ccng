@@ -6,8 +6,8 @@ import { SimpleList } from './widgets/SimpleList'
 
 let Home = () => {
     let mainMenu = [
-        { name: "t2s", title: "T to S" },
         { name: "s2t", title: "S to T" },
+        { name: "t2s", title: "T to S" },
         { name: "s2j", title: "S to J" }
     ]
     return (
