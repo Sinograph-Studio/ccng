@@ -1,21 +1,22 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * Generated with the TypeScript template
- * https://github.com/react-native-community/react-native-template-typescript
- *
- */
-
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { SimpleList } from './widgets/SimpleList'
 
 let Home = () => {
+    let mainMenu = [
+        { name: "t2s", title: "T to S" },
+        { name: "s2t", title: "S to T" },
+        { name: "s2j", title: "S to J" }
+    ]
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Hello World</Text>
+        <View style={{ flex: 1 }}>
+            <SimpleList data={mainMenu} onItemClick={() => void 0}>
+                { (item) =>
+                    <Text style={{'color': 'hsl(0, 0%, 35%)','fontSize': 21}}>{ item.title }</Text>
+                }
+            </SimpleList>
         </View>
     );
 }
