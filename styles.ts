@@ -58,6 +58,9 @@ export const styles = StyleSheet.create({
   adjustOption: {
 
   },
+  adjustOptionCurrent: {
+    backgroundColor: 'hsla(0, 0%, 0%, 0.075)'
+  },
   adjustOptionValText: {
     fontSize: 20
   },

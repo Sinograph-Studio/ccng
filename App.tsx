@@ -131,13 +131,13 @@ let AdjustOption = (props: { val: string, desc: string, current: string|null, se
         <TouchableNativeFeedback
             onPress={() => setCurrent(val)}
             onLongPress={() => setCurrent(null)} >
-            <View>
-            <Text>
-                <Text style={styles.adjustOptionValText}>{
-                    (thisIsCurrent? '★ ': '☆ ') + val
-                }</Text>
-                <Text>  {desc}</Text>
-            </Text>
+            <View style={thisIsCurrent? styles.adjustOptionCurrent: styles.adjustOption}>
+                <Text>
+                    <Text style={styles.adjustOptionValText}>
+                        { (thisIsCurrent? '★ ': '☆ ') + val }
+                    </Text>
+                    <Text>  {desc}</Text>
+                </Text>
             </View>
         </TouchableNativeFeedback>
     )
