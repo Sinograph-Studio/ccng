@@ -106,7 +106,7 @@ export const Mode = (() => {
         }
     })()
     let t2s: Profile = (() => {
-        let name = '⬅️ 繁體字 → 简化字'
+        let name = '➡️ 繁體字 → 简化字'
         let mappingCharSingle =
             Object.assign({},
                 invert(data.簡化.繁化表),
