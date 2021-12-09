@@ -1,6 +1,6 @@
 // react, react-native
 import React, { useState } from 'react'
-import { View, ScrollView, Text, TextInput, Button } from 'react-native'
+import { View, ScrollView, Text, TextInput, Button, TouchableNativeFeedback } from 'react-native'
 // react-navigation
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack'
@@ -42,15 +42,19 @@ let Input = (props: NativeStackScreenProps<NavigationConfig, 'Input'>) => {
     }
     return (
         <ScrollView style={{ flex: 1 }}>
-            <Text style={styles.title}>{ profile.name }</Text>
-            <TextInput
-                multiline
-                style={styles.input}
-                value={input}
-                onChangeText={setInput}
-                placeholder="在這裡輸入原文"
-            />
-            <Button onPress={adjust} title="OK" />
+            <View style={styles.input}>
+                <Text style={styles.title}>{ profile.name }</Text>
+                <TextInput
+                    multiline
+                    style={styles.inputTextInput}
+                    value={input}
+                    onChangeText={setInput}
+                    placeholder="在這裡輸入原文"
+                />
+                <View style={styles.inputButtonWrapper}>
+                    <Button onPress={adjust} title="OK" />
+                </View>
+            </View>
         </ScrollView>
     )
 }
@@ -58,39 +62,105 @@ let Input = (props: NativeStackScreenProps<NavigationConfig, 'Input'>) => {
 let Adjust = (props: NativeStackScreenProps<NavigationConfig, 'Adjust'>) => {
     let {profile, input} = props.route.params
     let [converter] = useState(() => new Converter(profile, input))
-    let seq = Array.from((function* () {
-        let n = converter.MultiValuesCount()
-        for (let i = 0; i < n; i += 1) { yield i }
-    })())
+    let total = converter.MultiValuesCount()
+    let [confirmed,setConfirmed] = useState(0)
+    let confirm = (p: boolean) => {
+        if (p) {
+            setConfirmed(n => (n + 1))
+        } else {
+            setConfirmed(n => (n - 1))
+        }
+    }
     return (
         <ScrollView style={{ flex: 1 }}>
-            { seq.map((index) => (
-                <AdjustItem converter={converter} index={index} key={index} />
-            )) }
+            <View style={styles.adjust}>
+                { Array.from((function* () {
+                    for (let i = 0; i < total; i += 1) { yield i }
+                })()).map((index) => (
+                    <AdjustItem converter={converter} index={index} total={total} confirm={confirm} key={index} />
+                )) }
+                <AdjustFinish total={total} confirmed={confirmed} />
+            </View>
         </ScrollView>
     )
 }
-let AdjustItem = (props: { converter: Converter, index: number }) => {
+let AdjustItem = (props: { converter: Converter, index: number, total: number, confirm: (p:boolean)=>void }) => {
     let [left,focus,right] = props.converter.MultiValueNeighborhood(props.index)
     let options = props.converter.MultiValueOptions(props.index)
     let tip = props.converter.MultiValueTip(props.index)
-    let current = props.converter.MultiValueCurrentOverride(props.index)
+    let initialCurrent = props.converter.MultiValueCurrentOverride(props.index)
+    let [current,setCurrentLocal] = useState(initialCurrent)
+    let setCurrent = (value: string|null) => {
+        value = value || null
+        setCurrentLocal(value)
+        props.converter.MultiValueSetOverride(props.index, value)
+        if (Boolean(value) != Boolean(current)) {
+            props.confirm(Boolean(value))
+        }
+    }
     return (
-        <View>
-            <Text>
-                <Text>……{left}</Text>
-                <Text style={{fontWeight:'bold',fontSize:20}}>{focus}</Text>
-                <Text>{right}……</Text>
-            </Text>
+        <View style={styles.adjustItem}>
+            <Text>{ `${props.index+1}/${props.total}` }</Text>
+            <AdjustPreview left={left} focus={focus} right={right} current={current} />
             <View>
                 { options.map(([val,desc]) => (
-                    <View key={val}>
-                        <Text style={{fontSize:20}}>{val}</Text>
-                        <Text>{desc}</Text>
-                    </View>
+                    <AdjustOption val={val} desc={desc} current={current} setCurrent={setCurrent} key={val} />
                 )) }
             </View>
             <Text>{tip}</Text>
+        </View>
+    )
+}
+let AdjustPreview = (props: { left: string, right: string, focus: string, current: string|null }) => {
+    let {left,right,focus,current} = props
+    let adjusted = Boolean(current)
+    return (
+        <Text style={styles.adjustPreview}>
+            <Text>……{left}</Text>
+            <Text style={adjusted? styles.adjustPreviewFocusAdjusted: styles.adjustPreviewFocusRaw}>
+                {adjusted? current: focus}
+            </Text>
+            <Text>{right}……</Text>
+        </Text>
+    )
+}
+let AdjustOption = (props: { val: string, desc: string, current: string, setCurrent: (val: string|null)=>void }) => {
+    let {val,desc,current,setCurrent} = props
+    let thisIsCurrent = (current == val)
+    return (
+        <TouchableNativeFeedback
+            onPress={() => setCurrent(val)}
+            onLongPress={() => setCurrent(null)} >
+            <View>
+            <Text>
+                <Text style={styles.adjustOptionValText}>{
+                    (thisIsCurrent? '★ ': '☆ ') + val
+                }</Text>
+                <Text>  {desc}</Text>
+            </Text>
+            </View>
+        </TouchableNativeFeedback>
+    )
+}
+let AdjustFinish = (props: { total: number, confirmed: number }) => {
+    let {total,confirmed} = props
+    let allConfirmed = (confirmed == total)
+    return (
+        <View style={styles.adjustFinish}>
+            <Text>
+                <Text>共
+                    <Text style={styles.adjustFinishTotal}> {total} </Text>
+                個校正項，</Text>
+                { allConfirmed?
+                    <Text>已全部確認。</Text>:
+                    <Text>已確認
+                        <Text style={styles.adjustFinishConfirmed}> {confirmed} </Text>
+                    個。</Text>
+                }
+            </Text>
+            <View style={styles.adjustFinishButtonWrapper}>
+                <Button title="生成轉換結果" />
+            </View>
         </View>
     )
 }

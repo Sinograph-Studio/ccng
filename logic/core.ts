@@ -9,9 +9,21 @@ export class Converter {
     private override: (string|null)[]
     constructor(profile: Profile, input: string) {
         this.profile = profile
-        this.chars = string2chars(input)
+        this.chars = this.genChars(input)
         this.multiValues = this.genMultiValues()
         this.override = []
+    }
+    private genChars(input: string): string[] {
+        let chars: string[] = []
+        for (let char of input) {
+            let converted = this.profile.mappingCharSingle[char]
+            if (converted) {
+                chars.push(converted)
+            } else {
+                chars.push(char)
+            }
+        }
+        return chars
     }
     private genMultiValues(): MultiValueItem[] {
         let multiValues: MultiValueItem[] = []
@@ -94,20 +106,11 @@ export class Converter {
                 }
             }
             let char = this.chars[i]
-            let converted = this.profile.mappingCharSingle[char]
-            parts.push(converted)
+            parts.push(char)
             i += 1
         }
         return parts.join('')
     }
-}
-
-function string2chars(s: string): string[] {
-    let chars: string[] = []
-    for (let char of s) {
-        chars.push(char)
-    }
-    return chars
 }
 
 function stringRealLength(s: string): number {
