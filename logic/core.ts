@@ -5,18 +5,16 @@ export class Converter {
     private chars: string[]
     private overrideChar: Map<number,string>
     private overrideWord: Map<number,string>
-    private charMultiValues: [number,MultiValue][]
-    private wordMultiValues: [number,MultiValue][]
+    private multiValues: [number,'char'|'word',MultiValue][]
     constructor(profile: Profile, text: string) {
         this.profile = profile
         this.chars = string2chars(text)
         this.overrideChar = new Map()
         this.overrideWord = new Map()
-        ;[this.charMultiValues, this.wordMultiValues] = this.genMultiValues()
+        this.multiValues = this.genMultiValues()
     }
-    private genMultiValues(): [[number,MultiValue][],[number,MultiValue][]] {
-        let charMultiValues: [number,MultiValue][] = []
-        let wordMultiValues: [number,MultiValue][] = []
+    private genMultiValues(): [number,'char'|'word',MultiValue][] {
+        let multiValues: [number,'char'|'word',MultiValue][] = []
         let maxWordLength = 0
         for (let word of Object.keys(this.profile.mappingWord)) {
             let length = stringRealLength(word)
@@ -29,17 +27,17 @@ export class Converter {
             let char = this.chars[i]
             let charMultiValue = this.profile.mappingCharMulti[char]
             if (charMultiValue) {
-                charMultiValues.push([index, charMultiValue])
+                multiValues.push([index, 'char', charMultiValue])
             }
             for (let j = 1; j < maxWordLength; j += 1) {
                 let span = this.chars.slice(i, i+j).join('')
                 let wordMultiValue = this.profile.mappingWord[span]
                 if (wordMultiValue) {
-                    wordMultiValues.push([index, wordMultiValue])
+                    multiValues.push([index, 'word', wordMultiValue])
                 }
             }
         }
-        return [charMultiValues, wordMultiValues]
+        return multiValues
     }
     output(): string {
         var parts: string[] = []
