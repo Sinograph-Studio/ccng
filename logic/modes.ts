@@ -1,5 +1,5 @@
 import data from '../legacy/資料'
-import {Profile,Option} from './core'
+import {Profile,Option} from './types'
 
 function mapVal<A,B>(dict: A, f: (a:A[keyof A]) => B): Record<keyof A, B> {
     var b = {} as Record<keyof A, B>
@@ -67,7 +67,7 @@ function wordEntry(from:string, to:string, original: string, category:string): {
 
 export const Mode = (() => {
     let s2t: Profile = (() => {
-        let name = '简化字 → 繁體字'
+        let name = '➡️ 简化字 → 繁體字'
         let mappingCharSingle =
             Object.assign({},
                 data.繁化.繁化表,
@@ -106,7 +106,7 @@ export const Mode = (() => {
         }
     })()
     let t2s: Profile = (() => {
-        let name = '繁體字 → 简化字'
+        let name = '⬅️ 繁體字 → 简化字'
         let mappingCharSingle =
             Object.assign({},
                 invert(data.簡化.繁化表),
@@ -154,7 +154,7 @@ export const Mode = (() => {
         }
     })()
     let s2j: Profile = (() => {
-        let name = '简化字 → 日本新字体'
+        let name = '↪️ 简化字 → 日本新字体'
         let mappingCharSingle =
             Object.assign({},
                 data.新字體化.繁化表新字體交集表,
@@ -164,9 +164,9 @@ export const Mode = (() => {
             mapVal(data.新字體化.一對多新字體表, (表項) => ({
                 to: Object.entries(表項.對應字).map(([新字體標準字,例詞表]) => ({
                     value: 新字體標準字,
-                    description: 例詞表.join(' / ')
+                    description: ''
                 })),
-                tip: 表項.注解
+                tip: ''
             }))
         return {
             name,
