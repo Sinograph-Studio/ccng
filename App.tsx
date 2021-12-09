@@ -124,7 +124,7 @@ let AdjustPreview = (props: { left: string, right: string, focus: string, curren
         </Text>
     )
 }
-let AdjustOption = (props: { val: string, desc: string, current: string, setCurrent: (val: string|null)=>void }) => {
+let AdjustOption = (props: { val: string, desc: string, current: string|null, setCurrent: (val: string|null)=>void }) => {
     let {val,desc,current,setCurrent} = props
     let thisIsCurrent = (current == val)
     return (
