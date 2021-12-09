@@ -1,4 +1,4 @@
-export const 正異取捨表: { [簡化字:string]: string[][] } = {
+export const 正異取捨表: { [簡化字:string]: [string,string,string][] } = {
   "着": [["着", "著", "着"]],
   "兑": [
     ["兑", "兌", "兑"],
