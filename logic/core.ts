@@ -37,14 +37,15 @@ export class Converter {
                 maxWordLength = length
             }
         }
-        for (let i = 0; i < this.chars.length; i += 1) {
+        let L = this.charsCount()
+        for (let i = 0; i < L; i += 1) {
             let index = i
             let char = this.chars[i]
             let charMultiValue = this.profile.mappingCharMulti[char]
             if (charMultiValue) {
                 multiValues.push(['char', index, charMultiValue, 1])
             }
-            for (let j = 1; j <= maxWordLength; j += 1) {
+            for (let j = 1; j <= maxWordLength && ((i + j) <= L); j += 1) {
                 let span = this.chars.slice(i, i+j).join('')
                 let wordMultiValue = this.profile.mappingWord[span]
                 if (wordMultiValue) {
