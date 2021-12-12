@@ -75,11 +75,14 @@ function wordEntry(from:string, to:string, original: string, category:string): {
     }
 }
 
-function withInvariant(m: Record<string, MultiValue>): Record<string, MultiValue> {
+function withInvariant(opts: { isWord: boolean}, m: Record<string, MultiValue>): Record<string, MultiValue> {
     for (let k in m) {
         if (Object.prototype.hasOwnProperty.call(m, k)) {
             if (m[k].to.every(opt => opt.value != k)) {
                 m[k].to.push({ value: k, description: '不轉換' })
+            }
+            if (opts.isWord) {
+                m[k].to.push({ value: '〇', description: '忽略' })
             }
         }
     }
@@ -100,7 +103,7 @@ export const Mode = (() => {
                 ))
             )
         let mappingCharMulti =
-            withInvariant(mapVal(data.繁化.一簡多繁表, (表項) => ({
+            withInvariant({ isWord: false }, mapVal(data.繁化.一簡多繁表, (表項) => ({
                 to: Object.entries(表項.對應字).map(([繁體字,例詞表]) => ({
                     value: 繁體字,
                     description: 例詞表.join(' / ')
@@ -108,7 +111,7 @@ export const Mode = (() => {
                 tip: 表項.注解
             })))
         let mappingWord =
-            withInvariant(mapVal(collectToDict(
+            withInvariant({ isWord: true }, mapVal(collectToDict(
                 Object.entries(data.繁化.專門用語表).flatMap(([類別,用語集]) => 
                     用語集.flatMap((用語) => cartProduct(用語.中, 用語.台).map(([from,to]) => {
                         let original = 用語.原
@@ -148,7 +151,7 @@ export const Mode = (() => {
                 )
             )
         let mappingCharMulti =
-            withInvariant(mapVal(data.簡化.一繁多簡表, (表項) => ({
+            withInvariant({ isWord: false }, mapVal(data.簡化.一繁多簡表, (表項) => ({
                 to: Object.entries(表項.對應字).map(([簡化字,例詞表]) => ({
                     value: 簡化字,
                     description: 例詞表.join(' / ')
@@ -156,7 +159,7 @@ export const Mode = (() => {
                 tip: 表項.注解
             })))
         let mappingWord =
-            withInvariant(mapVal(collectToDict(
+            withInvariant({ isWord: true }, mapVal(collectToDict(
                 Object.entries(data.簡化.專門用語表).flatMap(([類別,用語集]) => 
                     用語集.flatMap((用語) => cartProduct(用語.台, 用語.中).map(([from,to]) => {
                         let original = 用語.原
@@ -188,7 +191,7 @@ export const Mode = (() => {
                 data.新字體化.增補一對一新字體表
             )
         let mappingCharMulti =
-            withInvariant(mapVal(data.新字體化.一對多新字體表, (表項) => ({
+            withInvariant({ isWord: false }, mapVal(data.新字體化.一對多新字體表, (表項) => ({
                 to: Object.entries(表項.對應字).map(([新字體標準字,例詞表]) => ({
                     value: 新字體標準字,
                     description: ''

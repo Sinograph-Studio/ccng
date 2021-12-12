@@ -118,13 +118,16 @@ let AdjustItem = (props: { converter: Converter, index: number, total: number, c
 let AdjustPreview = (props: { left: string, right: string, focus: string, current: string|null }) => {
     let {left,right,focus,current} = props
     let adjusted = Boolean(current)
+    let normalize = (text: string): string => {
+        return text.replace(/\n/g, '[LF]')
+    }
     return (
         <Text style={styles.adjustPreview}>
-            <Text>……{left}</Text>
+            <Text>……{normalize(left)}</Text>
             <Text style={adjusted? styles.adjustPreviewFocusAdjusted: styles.adjustPreviewFocusRaw}>
                 {adjusted? current: focus}
             </Text>
-            <Text>{right}……</Text>
+            <Text>{normalize(right)}……</Text>
         </Text>
     )
 }

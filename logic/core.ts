@@ -95,7 +95,9 @@ export class Converter {
             var value = this.override[i]
             if (value) {
                 if (kind == 'word') {
-                    overrideWord.set(pos, [value, spanLength])
+                    if (value != '〇') {
+                        overrideWord.set(pos, [value, spanLength])
+                    }
                 } else if (kind == 'char') {
                     overrideChar.set(pos, [value, spanLength])
                 }
