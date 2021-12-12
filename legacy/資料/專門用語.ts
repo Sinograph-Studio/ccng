@@ -7,9 +7,9 @@ import {物理} from './專門用語/物理'
 import {化學} from './專門用語/化學'
 import {電腦} from './專門用語/電腦'
 
-export const 專門用語表: { [類別:string]: 專門用語[] } = {
+export const 專門用語表: { [類別:string]: 專門用語[] } = Object.freeze({
     人名, 地名, 單位,
     數學, 物理, 化學, 電腦
-}
+})
 
 

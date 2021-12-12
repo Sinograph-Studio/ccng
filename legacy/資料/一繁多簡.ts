@@ -2,7 +2,7 @@ export type 一繁多簡表項 = {
   對應字: { [繁體字:string]: string[] },
   注解: string
 }
-export const 一繁多簡表: { [繁體字:string]: 一繁多簡表項 } = {
+export const 一繁多簡表: { [繁體字:string]: 一繁多簡表項 } = Object.freeze({
   "乾": {
     "對應字": {
       "乾": [
@@ -75,6 +75,6 @@ export const 一繁多簡表: { [繁體字:string]: 一繁多簡表項 } = {
     },
     "注解": "「鍊」用于首饰时写作「链」。"
   }
-}
+})
 
 

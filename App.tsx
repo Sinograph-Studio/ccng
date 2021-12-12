@@ -15,7 +15,8 @@ import { Converter } from './logic/core'
 type NavigationConfig = {
     Home: undefined,
     Input: { profile: Profile },
-    Adjust: { profile: Profile, input: string }
+    Adjust: { profile: Profile, input: string },
+    Output: { output: string }
 }
 
 let Home = (props: NativeStackScreenProps<NavigationConfig, 'Home'>) => {
@@ -71,6 +72,9 @@ let Adjust = (props: NativeStackScreenProps<NavigationConfig, 'Adjust'>) => {
             setConfirmed(n => (n - 1))
         }
     }
+    let next = () => {
+        props.navigation.navigate('Output', { output: converter.Output() })
+    }
     return (
         <ScrollView style={{ flex: 1 }}>
             <View style={styles.adjust}>
@@ -79,7 +83,7 @@ let Adjust = (props: NativeStackScreenProps<NavigationConfig, 'Adjust'>) => {
                 })()).map((index) => (
                     <AdjustItem converter={converter} index={index} total={total} confirm={confirm} key={index} />
                 )) }
-                <AdjustFinish total={total} confirmed={confirmed} />
+                <AdjustFinish total={total} confirmed={confirmed} next={next} />
             </View>
         </ScrollView>
     )
@@ -142,8 +146,8 @@ let AdjustOption = (props: { val: string, desc: string, current: string|null, se
         </TouchableNativeFeedback>
     )
 }
-let AdjustFinish = (props: { total: number, confirmed: number }) => {
-    let {total,confirmed} = props
+let AdjustFinish = (props: { total: number, confirmed: number, next: (() => void) }) => {
+    let {total,confirmed,next} = props
     let allConfirmed = (confirmed == total)
     return (
         <View style={styles.adjustFinish}>
@@ -159,9 +163,20 @@ let AdjustFinish = (props: { total: number, confirmed: number }) => {
                 }
             </Text>
             <View style={styles.adjustFinishButtonWrapper}>
-                <Button title="生成轉換結果" />
+                <Button title="生成轉換結果" onPress={next} />
             </View>
         </View>
+    )
+}
+
+let Output = (props: NativeStackScreenProps<NavigationConfig, 'Output'>) => {
+    let {output} = props.route.params
+    return (
+        <ScrollView style={{ flex: 1 }}>
+            <View style={styles.output}>
+                <Text selectable={true}>{output}</Text>
+            </View>
+        </ScrollView>
     )
 }
 
@@ -172,6 +187,7 @@ let App = () => {
             <Stack.Screen name="Home" component={Home}></Stack.Screen>
             <Stack.Screen name="Input" component={Input}></Stack.Screen>
             <Stack.Screen name="Adjust" component={Adjust}></Stack.Screen>
+            <Stack.Screen name="Output" component={Output}></Stack.Screen>
         </Stack.Navigator>
     </NavigationContainer>)
 }

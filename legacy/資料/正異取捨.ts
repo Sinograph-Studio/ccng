@@ -1,4 +1,4 @@
-export const 正異取捨表: { [簡化字:string]: [string,string,string][] } = {
+export const 正異取捨表: { [簡化字:string]: [string,string,string][] } = Object.freeze({
   "着": [["着", "著", "着"]],
   "兑": [
     ["兑", "兌", "兑"],
@@ -79,6 +79,6 @@ export const 正異取捨表: { [簡化字:string]: [string,string,string][] } =
   "敘": [["敘", "敘", "敍"]],
   "卫": [["卫", "衛", "衞"]],
   "赝": [["赝", "贗", "贋"]]
-}
+})
 
 

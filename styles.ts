@@ -75,6 +75,9 @@ export const styles = StyleSheet.create({
   },
   adjustFinishButtonWrapper: {
     marginVertical: 10
+  },
+  output: {
+    margin: 18
   }
 })
 

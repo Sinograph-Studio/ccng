@@ -2,7 +2,7 @@
  *  單向繁化表，處理類推簡化字
  */
 
-export const 單向繁化表: { [簡化字:string]: string } = {
+export const 單向繁化表: { [簡化字:string]: string } = Object.freeze({
   "㓥": "劏", // 不類推
   "𫖯": "頫", // 不類推
   "锺": "鍾", // 钟
@@ -36,6 +36,6 @@ export const 單向繁化表: { [簡化字:string]: string } = {
   "𫛲": "鵰", // 雕
   "𪨧": "崙", // 仑
   "𫗫": "餬"  // 糊
-}
+})
 
 

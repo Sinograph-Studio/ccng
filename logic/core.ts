@@ -5,25 +5,28 @@ const FOV = 12
 export class Converter {
     private profile: Profile
     private chars: string[]
+    private singleMappedChars: string[]
     private multiValues: MultiValueItem[]
     private override: (string|null)[]
     constructor(profile: Profile, input: string) {
         this.profile = profile
-        this.chars = this.genChars(input)
+        ;[this.chars, this.singleMappedChars] = this.genChars(input)
         this.multiValues = this.genMultiValues()
         this.override = []
     }
-    private genChars(input: string): string[] {
+    private genChars(input: string): [string[],string[]] {
         let chars: string[] = []
+        let singleMappedChars: string[] = []
         for (let char of input) {
+            chars.push(char)
             let converted = this.profile.mappingCharSingle[char]
             if (converted) {
-                chars.push(converted)
+                singleMappedChars.push(converted)
             } else {
-                chars.push(char)
+                singleMappedChars.push(char)
             }
         }
-        return chars
+        return [chars, singleMappedChars]
     }
     private genMultiValues(): MultiValueItem[] {
         let multiValues: MultiValueItem[] = []
@@ -41,7 +44,7 @@ export class Converter {
             if (charMultiValue) {
                 multiValues.push(['char', index, charMultiValue, 1])
             }
-            for (let j = 1; j < maxWordLength; j += 1) {
+            for (let j = 1; j <= maxWordLength; j += 1) {
                 let span = this.chars.slice(i, i+j).join('')
                 let wordMultiValue = this.profile.mappingWord[span]
                 if (wordMultiValue) {
@@ -51,19 +54,23 @@ export class Converter {
         }
         return multiValues
     }
+    private charsCount(): number {
+        return this.chars.length
+    }
     MultiValuesCount(): number {
         return this.multiValues.length
     }
     MultiValueNeighborhood(index: number): [string,string,string] {
+        let L = this.charsCount()
         let [_, pos, __, spanLength] = this.multiValues[index]
         let left = pos
         let right = (pos + spanLength)
-        if ((left - FOV) >= 0) { left -= FOV }
-        if ((right + FOV) < this.chars.length) { right += FOV }
+        if ((left - FOV) >= 0) { left -= FOV } else { left = 0 }
+        if ((right + FOV) < L) { right += FOV } else { right = L }
         return [
-            this.chars.slice(left, pos).join(''),
-            this.chars.slice(pos, (pos + spanLength)).join(''),
-            this.chars.slice((pos + spanLength), right).join(''),
+            this.singleMappedChars.slice(left, pos).join(''),
+            this.singleMappedChars.slice(pos, (pos + spanLength)).join(''),
+            this.singleMappedChars.slice((pos + spanLength), right).join(''),
         ]
     }
     MultiValueOptions(index: number): [string,string][] {
@@ -96,7 +103,7 @@ export class Converter {
         }
         var parts: string[] = []
         let i = 0
-        outer: while (i < this.chars.length) {
+        outer: while (i < this.charsCount()) {
             for (let override of [overrideWord, overrideChar]) {
                 if (override.has(i)) {
                     let [converted, spanLength] = override.get(i)!
@@ -105,7 +112,7 @@ export class Converter {
                     continue outer
                 }
             }
-            let char = this.chars[i]
+            let char = this.singleMappedChars[i]
             parts.push(char)
             i += 1
         }

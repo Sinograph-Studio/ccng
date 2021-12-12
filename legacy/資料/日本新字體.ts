@@ -15,7 +15,7 @@
  *
  */
 
-export const 繁化表新字體交集表: { [簡化字:string]: string } = {
+export const 繁化表新字體交集表: { [簡化字:string]: string } = Object.freeze({
   "医": "醫",
   "奥": "奧",
   "横": "橫",
@@ -104,9 +104,10 @@ export const 繁化表新字體交集表: { [簡化字:string]: string } = {
   "禄": "祿",
   "亘": "亙",
   "湾": "灣",
-}
+  "蝉": "蟬"  // 簡化字與新字體為同一編碼
+})
 
-export const 增補一對一新字體表: { [簡化字:string]: string } = {
+export const 增補一對一新字體表: { [簡化字:string]: string } = Object.freeze({
   /* 正異取捨，不在繁化表中 */
   "为": "為", // ため
   "伪": "偽", // にせ
@@ -159,13 +160,13 @@ export const 增補一對一新字體表: { [簡化字:string]: string } = {
   "迹": "跡",
   "宁": "寧",
   "咨": "諮"
-}
+})
 
 export type 一對多新字體表項 = {
   對應字: { [繁體字:string]: string[] },
   注解: string
 }
-export const 一對多新字體表: { [簡化字:string]: 一對多新字體表項 } = {
+export const 一對多新字體表: { [簡化字:string]: 一對多新字體表項 } = Object.freeze({
   "只": {
     "對應字": {
       "只": [
@@ -898,6 +899,6 @@ export const 一對多新字體表: { [簡化字:string]: 一對多新字體表�
     },
     "注解": "簡体字は「機械」の「機」という字を「机」という字に統合した。"
   }
-}
+})
 
 

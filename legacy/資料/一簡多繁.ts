@@ -13,7 +13,7 @@ export type 一簡多繁表項 = {
   對應字: { [繁體字:string]: string[] },
   注解: string
 }
-export const 一簡多繁表: { [簡化字:string]: 一簡多繁表項 } = {
+export const 一簡多繁表: { [簡化字:string]: 一簡多繁表項 } = Object.freeze({
   "划": {
     "對應字": {
       "划": [
@@ -2535,6 +2535,6 @@ export const 一簡多繁表: { [簡化字:string]: 一簡多繁表項 } = {
     },
     "注解": "「涌」讀若沖，粵語用字，指江河在入海口的河汊。常用於地名。"
   }
-}
+})
 
 

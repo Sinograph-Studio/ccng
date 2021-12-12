@@ -9,7 +9,7 @@
  *
  */
 
-export const 繁化表: { [簡化字:string]: string } = {
+export const 繁化表: { [簡化字:string]: string } = Object.freeze({
   "㐷": "傌",
   "㐹": "㑶",
   "㐽": "偑",
@@ -3799,6 +3799,6 @@ export const 繁化表: { [簡化字:string]: string } = {
   "愿": "願",
   // 增補
   "杠": "槓"
-}
+})
 
 

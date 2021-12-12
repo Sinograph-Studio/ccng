@@ -11,6 +11,16 @@ function mapVal<A,B>(dict: A, f: (a:A[keyof A]) => B): Record<keyof A, B> {
     return b
 }
 
+function filterKey<A>(dict: A, f: (k: keyof A) => boolean): A {
+    var filtered = {} as A
+    for (let k in dict) {
+        if (Object.prototype.hasOwnProperty.call(dict, k) && f(k)) {
+            filtered[k] = dict[k]
+        }
+    }
+    return filtered
+}
+
 function invert(rec: Record<string,string>): Record<string, string> {
     var inv = {} as Record<string, string>
     for (let k in rec) {
@@ -168,7 +178,13 @@ export const Mode = (() => {
         let name = '↪️ 简化字 → 日本新字体'
         let mappingCharSingle =
             Object.assign({},
-                data.新字體化.繁化表新字體交集表,
+                filterKey(
+                    Object.assign({},
+                        data.新字體化.繁化表,
+                        data.新字體化.單向繁化表
+                    ),
+                    簡化字 => !(簡化字 in data.新字體化.繁化表新字體交集表)
+                ),
                 data.新字體化.增補一對一新字體表
             )
         let mappingCharMulti =
