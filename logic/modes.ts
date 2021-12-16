@@ -91,7 +91,7 @@ function withInvariant(opts: { isWord: boolean}, m: Record<string, MultiValue>):
 
 export const Mode = (() => {
     let s2t: Profile = (() => {
-        let name = '➡️ 简化字 → 繁體字'
+        let name = '📝 简化字 → 繁體字'
         let mappingCharSingle =
             Object.assign({},
                 data.繁化.繁化表,
@@ -130,7 +130,7 @@ export const Mode = (() => {
         }
     })()
     let t2s: Profile = (() => {
-        let name = '➡️ 繁體字 → 简化字'
+        let name = '📝 繁體字 → 简化字'
         let mappingCharSingle =
             Object.assign({},
                 invert(data.簡化.繁化表),
@@ -178,7 +178,7 @@ export const Mode = (() => {
         }
     })()
     let s2j: Profile = (() => {
-        let name = '↪️ 简化字 → 日本新字体'
+        let name = '📝 简化字 → 日本新字体'
         let mappingCharSingle =
             Object.assign({},
                 filterKey(

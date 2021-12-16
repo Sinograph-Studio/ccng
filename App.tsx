@@ -3,7 +3,7 @@ import React, { useState, useCallback } from 'react'
 import { BackHandler, Alert, View, ScrollView, Text, TextInput, Button, TouchableNativeFeedback } from 'react-native'
 // react-navigation
 import { NavigationContainer, useFocusEffect } from '@react-navigation/native'
-import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack'
+import { createNativeStackNavigator, NativeStackScreenProps, NativeStackNavigationOptions } from '@react-navigation/native-stack'
 // styles, widgets, logic
 import { styles } from './styles'
 import { SimpleList } from './widgets/SimpleList'
@@ -78,7 +78,7 @@ let Adjust = (props: NativeStackScreenProps<NavigationConfig, 'Adjust'>) => {
     useFocusEffect(useCallback(() => {
         let h = BackHandler.addEventListener('hardwareBackPress', () => {
             if (confirmed > 0) {
-                Alert.alert('誤操作防止', '返回前一頁將會丢棄目前的校正調整。確認返回？', [
+                Alert.alert('誤操作防止', '返回前一頁將會丢棄目前的調整。確認返回？', [
                     { text: '取消', style: 'cancel', onPress: () => (void 0) },
                     { text: '返回', style: 'destructive', onPress: () => {
                         props.navigation.goBack()
@@ -173,7 +173,7 @@ let AdjustFinish = (props: { total: number, confirmed: number, next: (() => void
             <Text>
                 <Text>共
                     <Text style={styles.adjustFinishTotal}> {total} </Text>
-                個校正項，</Text>
+                個調整項，</Text>
                 { allConfirmed?
                     <Text>已全部確認。</Text>:
                     <Text>已確認
@@ -201,12 +201,18 @@ let Output = (props: NativeStackScreenProps<NavigationConfig, 'Output'>) => {
 
 let Stack = createNativeStackNavigator<NavigationConfig>()
 let App = () => {
+    let opts: Record<keyof NavigationConfig, NativeStackNavigationOptions> = {
+        Home: { title: '💡 繁簡轉換' },
+        Input: { title: '待轉換內容' },
+        Adjust: { title: '調整', headerBackVisible: false, headerRight: () => <Text>返回前一頁請使用手機的返回按鈕</Text> },
+        Output: { title: '轉換結果' }
+    }
     return (<NavigationContainer>
         <Stack.Navigator>
-            <Stack.Screen name="Home" component={Home}></Stack.Screen>
-            <Stack.Screen name="Input" component={Input}></Stack.Screen>
-            <Stack.Screen name="Adjust" component={Adjust} options={{headerBackVisible:false}}></Stack.Screen>
-            <Stack.Screen name="Output" component={Output}></Stack.Screen>
+            <Stack.Screen name="Home" component={Home} options={opts.Home} />
+            <Stack.Screen name="Input" component={Input} options={opts.Input} />
+            <Stack.Screen name="Adjust" component={Adjust} options={opts.Adjust} />
+            <Stack.Screen name="Output" component={Output} options={opts.Output} />
         </Stack.Navigator>
     </NavigationContainer>)
 }
