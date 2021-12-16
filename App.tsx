@@ -205,7 +205,7 @@ let App = () => {
         <Stack.Navigator>
             <Stack.Screen name="Home" component={Home}></Stack.Screen>
             <Stack.Screen name="Input" component={Input}></Stack.Screen>
-            <Stack.Screen name="Adjust" component={Adjust}></Stack.Screen>
+            <Stack.Screen name="Adjust" component={Adjust} options={{headerBackVisible:false}}></Stack.Screen>
             <Stack.Screen name="Output" component={Output}></Stack.Screen>
         </Stack.Navigator>
     </NavigationContainer>)
