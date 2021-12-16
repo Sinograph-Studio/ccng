@@ -253,10 +253,19 @@ let AdjustFinish = (props: { total: number, confirmed: number, next: (() => void
 
 let Output = (props: NativeStackScreenProps<NavigationConfig, 'Output'>) => {
     let {output} = props.route.params
+    let goHome = () => {
+        props.navigation.reset({
+            index: 0,
+            routes: [{ name: 'Home' }]
+        })
+    }
     return (
         <ScrollView style={{ flex: 1 }}>
             <View style={styles.output}>
                 <Text selectable={true}>{output}</Text>
+                <View style={styles.outputGoHomeButtonWrapper}>
+                    <Button title="返回首頁" onPress={goHome} />
+                </View>
             </View>
         </ScrollView>
     )
@@ -268,7 +277,7 @@ let App = () => {
         Home: { title: '💡 繁簡轉換' },
         Config: { title: '偏好設定' },
         Input: { title: '待轉換內容' },
-        Adjust: { title: '調整', headerBackVisible: false, headerRight: () => <Text>返回前一頁請使用手機的返回按鈕</Text> },
+        Adjust: { title: '調整', headerBackVisible: false },
         Output: { title: '轉換結果' }
     }
     return (<NavigationContainer>

@@ -83,6 +83,9 @@ export const styles = StyleSheet.create({
   },
   output: {
     margin: 18
+  },
+  outputGoHomeButtonWrapper: {
+    marginVertical: 10
   }
 })
 
