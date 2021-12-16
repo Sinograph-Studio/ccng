@@ -53,6 +53,16 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     color: 'hsl(88, 85%, 40%)'
   },
+  adjustPreviewIgnore: {
+    textDecorationLine: 'line-through',
+    color: 'hsl(0, 0%, 60%)'
+  },
+  adjustPreviewFocusIgnore: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    textDecorationLine: 'line-through',
+    color: 'hsl(0, 0%, 60%)'
+  },
   adjustOption: {},
   adjustOptionCurrent: {
     backgroundColor: 'hsla(0, 0%, 0%, 0.075)'

@@ -1,6 +1,6 @@
 // react, react-native
 import React, { useState, useCallback } from 'react'
-import { BackHandler, Alert, View, ScrollView, Text, TextInput, Button, TouchableNativeFeedback } from 'react-native'
+import { BackHandler, Alert, View, ScrollView, Text, TextInput, Button, TouchableNativeFeedback, StyleProp, TextStyle } from 'react-native'
 // react-navigation
 import { NavigationContainer, useFocusEffect } from '@react-navigation/native'
 import { createNativeStackNavigator, NativeStackScreenProps, NativeStackNavigationOptions } from '@react-navigation/native-stack'
@@ -138,16 +138,31 @@ let AdjustItem = (props: { converter: Converter, index: number, total: number, c
 let AdjustPreview = (props: { left: string, right: string, focus: string, current: string|null }) => {
     let {left,right,focus,current} = props
     let adjusted = Boolean(current)
-    let normalize = (text: string): string => {
-        return text.replace(/\n/g, '[LF]')
+    let InnerText = (props: { style?: StyleProp<TextStyle>, children: string|null }) => {
+        let normalize = (text: string|null): string => {
+            return (text || '').replace(/\n/g, '[LF]')
+        }
+        return <Text style={props.style}>{normalize(props.children)}</Text>
     }
-    return (
+    return (current != '〇')? (
         <Text style={styles.adjustPreview}>
-            <Text>……{normalize(left)}</Text>
-            <Text style={adjusted? styles.adjustPreviewFocusAdjusted: styles.adjustPreviewFocusRaw}>
+            <InnerText>{'……' + left}</InnerText>
+            <InnerText style={adjusted? styles.adjustPreviewFocusAdjusted: styles.adjustPreviewFocusRaw}>
                 {adjusted? current: focus}
-            </Text>
-            <Text>{normalize(right)}……</Text>
+            </InnerText>
+            <InnerText>{right + '……'}</InnerText>
+        </Text>
+    ): (
+        <Text style={styles.adjustPreview}>
+            <InnerText style={styles.adjustPreviewIgnore}>
+                {'……' + left}
+            </InnerText>
+            <InnerText style={styles.adjustPreviewFocusIgnore}>
+                {focus}
+            </InnerText>
+            <InnerText style={styles.adjustPreviewIgnore}>
+                {right + '……'}
+            </InnerText>
         </Text>
     )
 }
