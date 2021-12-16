@@ -2,9 +2,15 @@ import {Profile,MultiValue} from './types'
 
 export function WithCustomConfig(profile: Profile, config: string, options: { reverse?: boolean }): Profile {
     let mappingCustom: Record<string,MultiValue> = {}
-    config = config.replace(/\r\n/g, '\n').replace(/[ \t　]+/g, ' ')
+    config = config
+        .replace(/\r\n/g, '\n')
+        .replace(/[ \t　]+/g, ' ')
+        .replace(/^ +/g, '')
+        .replace(/ +$/g, '')
+        .replace(/ +,/g, ',')
+        .replace(/, +/g, ',')
     for (let line of config.split('\n')) {
-        let [from,to,original] = line.split(' ')
+        let [from,to,original] = line.split(',')
         if (options.reverse) {
             [from, to] = [to, from]
         }

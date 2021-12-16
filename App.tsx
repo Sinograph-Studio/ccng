@@ -15,28 +15,72 @@ import { WithCustomConfig } from './logic/custom'
 
 type NavigationConfig = {
     Home: undefined,
+    Config: { customConfig: string },
     Input: { profile: Profile },
     Adjust: { profile: Profile, input: string },
     Output: { output: string }
 }
+var globalUpdateCustomConfig: (newValue: string) => void
 
 let Home = (props: NativeStackScreenProps<NavigationConfig, 'Home'>) => {
     let [customConfig, setCustomConfig] = useState('')
-    let menuItem = (profile: Profile) => ({ profile, title: profile.name })
-    let mainMenu = [
-        menuItem(WithCustomConfig(Mode.s2t, customConfig, { reverse: true })),
-        menuItem(WithCustomConfig(Mode.t2s, customConfig, {})),
-        menuItem(Mode.s2j)
-    ]
+    globalUpdateCustomConfig = (newValue) => {
+        setCustomConfig(newValue)
+    }
+    function navigationLink<Name extends keyof NavigationConfig>(name: Name, params: NavigationConfig[Name]): () => void {
+        return () => { props.navigation.navigate(name, params) }
+    }
+    let menu: { title: string, link: () => void }[] = (() => {
+        let modeItem = (profile: Profile) => ({
+            title: profile.name,
+            link:  navigationLink('Input', { profile })
+        })
+        return [
+            modeItem(WithCustomConfig(Mode.s2t, customConfig, { reverse: true })),
+            modeItem(WithCustomConfig(Mode.t2s, customConfig, {})),
+            modeItem(Mode.s2j),
+            { title: '📖 偏好設定', link: navigationLink('Config', { customConfig }) }
+        ]
+    })()
     return (
-        <SimpleList style={{ flex: 1 }} data={mainMenu} onItemClick={
-            (item) => props.navigation.navigate('Input', { profile: item.profile })
-        }>
+        <SimpleList style={{ flex: 1 }} data={menu} onItemClick={({link}) => link()}>
             { (item) =>
-                <Text style={{'color': 'hsl(0, 0%, 35%)','fontSize': 21}}>{ item.title }</Text>
+                <Text style={{'color': 'hsl(0, 0%, 35%)','fontSize': 21}}>
+                    { item.title }
+                </Text>
             }
         </SimpleList>
     );
+}
+
+let Config = (props: NativeStackScreenProps<NavigationConfig, 'Config'>) => {
+    let customConfigCurrentValue = props.route.params.customConfig
+    let [customConfigBuf, setCustomConfigBuf] = useState(customConfigCurrentValue)
+    let save = () => {
+        globalUpdateCustomConfig(customConfigBuf)
+        props.navigation.goBack()
+    }
+    return (
+        <ScrollView style={{ flex: 1 }}>
+            <View style={styles.config}>
+                <Text style={styles.title}>⭐ 客製化轉換</Text>
+                <TextInput
+                    multiline
+                    style={styles.configTextInput}
+                    value={customConfigBuf}
+                    onChangeText={setCustomConfigBuf}
+                    placeholder="客製化轉換表"
+                />
+                <Text>轉換表格式：</Text>
+                <Text>繁體譯文,简体译文,word</Text>
+                <Text>繁體譯文,简体译文,word</Text>
+                <Text>……</Text>
+                <View style={styles.configButtonWrapper}>
+                    <Button onPress={save} title="儲存設定" />
+                </View>
+            </View>
+        </ScrollView>
+    )
 }
 
 let Input = (props: NativeStackScreenProps<NavigationConfig, 'Input'>) => {
@@ -222,6 +266,7 @@ let Stack = createNativeStackNavigator<NavigationConfig>()
 let App = () => {
     let opts: Record<keyof NavigationConfig, NativeStackNavigationOptions> = {
         Home: { title: '💡 繁簡轉換' },
+        Config: { title: '偏好設定' },
         Input: { title: '待轉換內容' },
         Adjust: { title: '調整', headerBackVisible: false, headerRight: () => <Text>返回前一頁請使用手機的返回按鈕</Text> },
         Output: { title: '轉換結果' }
@@ -229,6 +274,7 @@ let App = () => {
     return (<NavigationContainer>
         <Stack.Navigator>
             <Stack.Screen name="Home" component={Home} options={opts.Home} />
+            <Stack.Screen name="Config" component={Config} options={opts.Config} />
             <Stack.Screen name="Input" component={Input} options={opts.Input} />
             <Stack.Screen name="Adjust" component={Adjust} options={opts.Adjust} />
             <Stack.Screen name="Output" component={Output} options={opts.Output} />
