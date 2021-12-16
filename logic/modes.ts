@@ -75,14 +75,15 @@ function wordEntry(from:string, to:string, original: string, category:string): {
     }
 }
 
-function withInvariant(opts: { isWord: boolean}, m: Record<string, MultiValue>): Record<string, MultiValue> {
+function withInvariant(opts: { isWord: boolean }, m: Record<string, MultiValue>): Record<string, MultiValue> {
     for (let k in m) {
         if (Object.prototype.hasOwnProperty.call(m, k)) {
-            if (m[k].to.every(opt => opt.value != k)) {
-                m[k].to.push({ value: k, description: '不轉換' })
-            }
             if (opts.isWord) {
                 m[k].to.push({ value: '〇', description: '忽略' })
+            } else {
+                if (m[k].to.every(opt => opt.value != k)) {
+                    m[k].to.push({ value: k, description: '不轉換' })
+                }
             }
         }
     }

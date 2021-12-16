@@ -10,6 +10,7 @@ import { SimpleList } from './widgets/SimpleList'
 import { Profile } from './logic/types'
 import { Mode } from './logic/modes'
 import { Converter } from './logic/core'
+import { WithCustomConfig } from './logic/custom'
 
 
 type NavigationConfig = {
@@ -20,10 +21,13 @@ type NavigationConfig = {
 }
 
 let Home = (props: NativeStackScreenProps<NavigationConfig, 'Home'>) => {
-    let mainMenu = Object.values(Mode).map(mode => ({
-        profile: mode,
-        title: mode.name
-    }))
+    let [customConfig, setCustomConfig] = useState('')
+    let menuItem = (profile: Profile) => ({ profile, title: profile.name })
+    let mainMenu = [
+        menuItem(WithCustomConfig(Mode.s2t, customConfig, { reverse: true })),
+        menuItem(WithCustomConfig(Mode.t2s, customConfig, {})),
+        menuItem(Mode.s2j)
+    ]
     return (
         <SimpleList style={{ flex: 1 }} data={mainMenu} onItemClick={
             (item) => props.navigation.navigate('Input', { profile: item.profile })
@@ -80,7 +84,7 @@ let Adjust = (props: NativeStackScreenProps<NavigationConfig, 'Adjust'>) => {
             if (confirmed > 0) {
                 Alert.alert('誤操作防止', '返回前一頁將會丢棄目前的調整。確認返回？', [
                     { text: '取消', style: 'cancel', onPress: () => (void 0) },
-                    { text: '返回', style: 'destructive', onPress: () => {
+                    { text: '返回並丢棄', style: 'destructive', onPress: () => {
                         props.navigation.goBack()
                     } }
                 ])

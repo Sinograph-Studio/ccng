@@ -42,9 +42,7 @@ export const styles = StyleSheet.create({
       borderBottomColor: '#333',
       borderWidth: 1
   },
-  adjustPreview: {
-
-  },
+  adjustPreview: {},
   adjustPreviewFocusRaw: {
     fontWeight: 'bold',
     fontSize: 20,
@@ -55,9 +53,7 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     color: 'hsl(88, 85%, 40%)'
   },
-  adjustOption: {
-
-  },
+  adjustOption: {},
   adjustOptionCurrent: {
     backgroundColor: 'hsla(0, 0%, 0%, 0.075)'
   },

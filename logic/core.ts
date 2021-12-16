@@ -39,17 +39,24 @@ export class Converter {
         }
         let L = this.charsCount()
         for (let i = 0; i < L; i += 1) {
-            let index = i
+            let pos = i
             let char = this.chars[i]
-            let charMultiValue = this.profile.mappingCharMulti[char]
-            if (charMultiValue) {
-                multiValues.push(['char', index, charMultiValue, 1])
+            let mv = this.profile.mappingCharMulti[char]
+            if (mv) {
+                multiValues.push(['char', pos, mv, 1])
             }
             for (let j = 1; j <= maxWordLength && ((i + j) <= L); j += 1) {
                 let span = this.chars.slice(i, i+j).join('')
-                let wordMultiValue = this.profile.mappingWord[span]
-                if (wordMultiValue) {
-                    multiValues.push(['word', index, wordMultiValue, j])
+                let spanLength = j
+                let mv = this.profile.mappingWord[span]
+                if (mv) {
+                    multiValues.push(['word', pos, mv, spanLength])
+                }
+                if (this.profile.mappingCustom) {
+                    let mv = this.profile.mappingCustom[span]
+                    if (mv) {
+                        multiValues.push(['word', pos, mv, spanLength])
+                    }
                 }
             }
         }
