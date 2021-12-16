@@ -1,9 +1,11 @@
 // react, react-native
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { BackHandler, Alert, View, ScrollView, Text, TextInput, Button, TouchableNativeFeedback, StyleProp, TextStyle } from 'react-native'
 // react-navigation
 import { NavigationContainer, useFocusEffect } from '@react-navigation/native'
 import { createNativeStackNavigator, NativeStackScreenProps, NativeStackNavigationOptions } from '@react-navigation/native-stack'
+// react-native-default-preference
+import DefaultPreference from 'react-native-default-preference';
 // styles, widgets, logic
 import { styles } from './styles'
 import { SimpleList } from './widgets/SimpleList'
@@ -24,8 +26,15 @@ var globalUpdateCustomConfig: (newValue: string) => void
 
 let Home = (props: NativeStackScreenProps<NavigationConfig, 'Home'>) => {
     let [customConfig, setCustomConfig] = useState('')
+    useEffect(() => {
+        (async () => {
+            let savedValue = ((await DefaultPreference.get('customConfig')) || '')
+            setCustomConfig(savedValue)
+        })()
+    }, [])
     globalUpdateCustomConfig = (newValue) => {
         setCustomConfig(newValue)
+        DefaultPreference.set('customConfig', newValue)
     }
     function navigationLink<Name extends keyof NavigationConfig>(name: Name, params: NavigationConfig[Name]): () => void {
         return () => { props.navigation.navigate(name, params) }
@@ -128,7 +137,7 @@ let Adjust = (props: NativeStackScreenProps<NavigationConfig, 'Adjust'>) => {
             if (confirmed > 0) {
                 Alert.alert('誤操作防止', '返回前一頁將會丢棄目前的調整。確認返回？', [
                     { text: '取消', style: 'cancel', onPress: () => (void 0) },
-                    { text: '返回並丢棄', style: 'destructive', onPress: () => {
+                    { text: '返回並丢棄調整', style: 'destructive', onPress: () => {
                         props.navigation.goBack()
                     } }
                 ])

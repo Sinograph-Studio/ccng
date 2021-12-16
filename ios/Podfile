@@ -12,6 +12,8 @@ target 'ccng' do
     :hermes_enabled => false
   )
 
+  pod 'RNDefaultPreference', :path => '../node_modules/react-native-default-preference'
+
   target 'ccngTests' do
     inherit! :complete
     # Pods for testing
