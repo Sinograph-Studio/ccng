@@ -1,6 +1,6 @@
 // react, react-native
 import React, { useState, useCallback, useEffect } from 'react'
-import { BackHandler, Alert, View, ScrollView, Text, TextInput, Button, TouchableNativeFeedback, StyleProp, TextStyle } from 'react-native'
+import { Platform, BackHandler, Alert, View, ScrollView, Text, TextInput, Button, TouchableNativeFeedback, StyleProp, TextStyle } from 'react-native'
 // react-navigation
 import { NavigationContainer, useFocusEffect } from '@react-navigation/native'
 import { createNativeStackNavigator, NativeStackScreenProps, NativeStackNavigationOptions } from '@react-navigation/native-stack'
@@ -8,7 +8,7 @@ import { createNativeStackNavigator, NativeStackScreenProps, NativeStackNavigati
 import DefaultPreference from 'react-native-default-preference';
 // styles, widgets, logic
 import { styles } from './styles'
-import { P, Title, SmallTitle } from './widgets/P'
+import { P, A, Title, SmallTitle, Sep } from './widgets/P'
 import { SimpleList } from './widgets/SimpleList'
 import { Profile } from './logic/types'
 import { Mode } from './logic/modes'
@@ -66,12 +66,34 @@ let Home = (props: NativeStackScreenProps<NavigationConfig, 'Home'>) => {
 }
 
 let About = (props: NativeStackScreenProps<NavigationConfig, 'About'>) => {
+    let reactNativeVersion = (() => {
+        let {major,minor,patch} = Platform.constants.reactNativeVersion
+        return `${major}.${minor}.${patch}`
+    })()
     return (
         <ScrollView style={{ flex: 1 }}>
             <View style={styles.config}>
                 <Title>簡介</Title>
-                <P>真・繁簡轉換 (ccng) 是支持手工調整的繁簡轉換工具。</P>
-                <P>{''}</P>
+                <P>真・繁簡轉換 (ccng) 是支持手工調整的繁簡轉換工具。開放原始碼，不提供任何担保。</P>
+                <P>支援簡轉繁，繁轉簡，可以手工調整一對多字和地域用語的轉換，異體字按台灣習慣處理；另有簡化字到日本新字體的轉換功能（用於恢復簡體化的日文）。</P>
+                <P>註：內建地域用語轉換僅覆蓋人名地名和部分專業領域。如有更多需要，可在「偏好設定」中添加額外的地域用語轉換表。</P>
+                <Sep/>
+                <Title>版權資訊</Title>
+                <P>此軟體以 MIT 授權條款開放原始碼：</P>
+                <A href="https://github.com/mizusato/ccng">
+                    GitHub - mizusato/ccng
+                </A>
+                <P>一對多字的相關說明取自：</P>
+                <A href="http://ytenx.org/byohlyuk/KienxPyan">
+                    韻典網 - 現代漢語常用簡繁一對多字義辨析表
+                </A>
+                <P>內建地域用語轉換表節選整理自：</P>
+                <A href="https://zh.wikipedia.org/wiki/Template:CGroup">
+                    中文維基百科 - 模板:CGroup
+                </A>
+                <Sep/>
+                <Title>技術細節</Title>
+                <P>{`使用 React Native ${reactNativeVersion} 開發。`}</P>
             </View>
         </ScrollView>
     )

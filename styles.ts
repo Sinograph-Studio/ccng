@@ -6,6 +6,13 @@ export const styles = StyleSheet.create({
     marginVertical: 3,
     fontSize: 16
   },
+  a: {
+    marginHorizontal: 12,
+    marginTop: 1,
+    marginBottom: 3,
+    fontSize: 15,
+    color: 'hsl(230, 90%, 60%)'
+  },
   smallTitle: {
     marginHorizontal: 12,
     marginVertical: 3,
@@ -18,6 +25,9 @@ export const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textAlignVertical: 'center'
+  },
+  sep: {
+    fontSize: 9
   },
   about: {
     margin: 12
