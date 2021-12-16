@@ -1,8 +1,8 @@
 // react, react-native
-import React, { useState } from 'react'
-import { View, ScrollView, Text, TextInput, Button, TouchableNativeFeedback } from 'react-native'
+import React, { useState, useCallback } from 'react'
+import { BackHandler, Alert, View, ScrollView, Text, TextInput, Button, TouchableNativeFeedback } from 'react-native'
 // react-navigation
-import { NavigationContainer } from '@react-navigation/native'
+import { NavigationContainer, useFocusEffect } from '@react-navigation/native'
 import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack'
 // styles, widgets, logic
 import { styles } from './styles'
@@ -75,6 +75,22 @@ let Adjust = (props: NativeStackScreenProps<NavigationConfig, 'Adjust'>) => {
     let next = () => {
         props.navigation.navigate('Output', { output: converter.Output() })
     }
+    useFocusEffect(useCallback(() => {
+        let h = BackHandler.addEventListener('hardwareBackPress', () => {
+            if (confirmed > 0) {
+                Alert.alert('誤操作防止', '返回前一頁將會丢棄目前的校正調整。確認返回？', [
+                    { text: '取消', style: 'cancel', onPress: () => (void 0) },
+                    { text: '返回', style: 'destructive', onPress: () => {
+                        props.navigation.goBack()
+                    } }
+                ])
+                return true
+            } else {
+                return false
+            }
+        })
+        return () => { h.remove() }
+    }, [props.navigation, confirmed]))
     return (
         <ScrollView style={{ flex: 1 }}>
             <View style={styles.adjust}>
