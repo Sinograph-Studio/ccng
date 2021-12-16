@@ -65,7 +65,7 @@ let Home = (props: NativeStackScreenProps<NavigationConfig, 'Home'>) => {
     );
 }
 
-let About = (props: NativeStackScreenProps<NavigationConfig, 'About'>) => {
+let About = (_: NativeStackScreenProps<NavigationConfig, 'About'>) => {
     let reactNativeVersion = (() => {
         let {major,minor,patch} = Platform.constants.reactNativeVersion
         return `${major}.${minor}.${patch}`
