@@ -8,6 +8,7 @@ import { createNativeStackNavigator, NativeStackScreenProps, NativeStackNavigati
 import DefaultPreference from 'react-native-default-preference';
 // styles, widgets, logic
 import { styles } from './styles'
+import { P, Title, SmallTitle } from './widgets/P'
 import { SimpleList } from './widgets/SimpleList'
 import { Profile } from './logic/types'
 import { Mode } from './logic/modes'
@@ -17,6 +18,7 @@ import { WithCustomConfig } from './logic/custom'
 
 type NavigationConfig = {
     Home: undefined,
+    About: {},
     Config: { customConfig: string },
     Input: { profile: Profile },
     Adjust: { profile: Profile, input: string },
@@ -45,10 +47,11 @@ let Home = (props: NativeStackScreenProps<NavigationConfig, 'Home'>) => {
             link:  navigationLink('Input', { profile })
         })
         return [
+            { title: '💡 軟體資訊', link: navigationLink('About', {}) },
+            { title: '📖 偏好設定', link: navigationLink('Config', { customConfig }) },
             modeItem(WithCustomConfig(Mode.s2t, customConfig, { reverse: true })),
             modeItem(WithCustomConfig(Mode.t2s, customConfig, {})),
-            modeItem(Mode.s2j),
-            { title: '📖 偏好設定', link: navigationLink('Config', { customConfig }) }
+            modeItem(Mode.s2j)
         ]
     })()
     return (
@@ -62,6 +65,18 @@ let Home = (props: NativeStackScreenProps<NavigationConfig, 'Home'>) => {
     );
 }
 
+let About = (props: NativeStackScreenProps<NavigationConfig, 'About'>) => {
+    return (
+        <ScrollView style={{ flex: 1 }}>
+            <View style={styles.config}>
+                <Title>簡介</Title>
+                <P>真・繁簡轉換 (ccng) 是支持手工調整的繁簡轉換工具。</P>
+                <P>{''}</P>
+            </View>
+        </ScrollView>
+    )
+}
+
 let Config = (props: NativeStackScreenProps<NavigationConfig, 'Config'>) => {
     let customConfigCurrentValue = props.route.params.customConfig
     let [customConfigBuf, setCustomConfigBuf] = useState(customConfigCurrentValue)
@@ -72,7 +87,8 @@ let Config = (props: NativeStackScreenProps<NavigationConfig, 'Config'>) => {
     return (
         <ScrollView style={{ flex: 1 }}>
             <View style={styles.config}>
-                <Text style={styles.title}>⭐ 客製化轉換</Text>
+                <Title>⭐ 客製化轉換</Title>
+                <P>可在此處添加額外的區域用語轉換條目。</P>
                 <TextInput
                     multiline
                     style={styles.configTextInput}
@@ -80,10 +96,12 @@ let Config = (props: NativeStackScreenProps<NavigationConfig, 'Config'>) => {
                     onChangeText={setCustomConfigBuf}
                     placeholder="客製化轉換表"
                 />
-                <Text>轉換表格式：</Text>
-                <Text>繁體譯文,简体译文,word</Text>
-                <Text>繁體譯文,简体译文,word</Text>
-                <Text>……</Text>
+                <SmallTitle>格式：</SmallTitle>
+                <P>繁體譯文,简体译文,word</P>
+                <SmallTitle>例：</SmallTitle>
+                <P>光碟,光盘,optical disc</P>
+                <P>光碟機,光驱,optical disc drive</P>
+                <P>光碟機,光盘驱动器,optical disc drive</P>
                 <View style={styles.configButtonWrapper}>
                     <Button onPress={save} title="儲存設定" />
                 </View>
@@ -101,7 +119,7 @@ let Input = (props: NativeStackScreenProps<NavigationConfig, 'Input'>) => {
     return (
         <ScrollView style={{ flex: 1 }}>
             <View style={styles.input}>
-                <Text style={styles.title}>{ profile.name }</Text>
+                <Title>{ profile.name }</Title>
                 <TextInput
                     multiline
                     style={styles.inputTextInput}
@@ -184,7 +202,7 @@ let AdjustItem = (props: { converter: Converter, index: number, total: number, c
                     <AdjustOption val={val} desc={desc} current={current} setCurrent={setCurrent} key={val} />
                 )) }
             </View>
-            <Text>{tip}</Text>
+            <Text style={styles.adjustTip}>{tip}</Text>
         </View>
     )
 }
@@ -247,7 +265,7 @@ let AdjustFinish = (props: { total: number, confirmed: number, next: (() => void
                     <Text style={styles.adjustFinishTotal}> {total} </Text>
                 個調整項，</Text>
                 { allConfirmed?
-                    <Text>已全部確認。</Text>:
+                    <Text>已全部確認。✅</Text>:
                     <Text>已確認
                         <Text style={styles.adjustFinishConfirmed}> {confirmed} </Text>
                     個。</Text>
@@ -271,9 +289,16 @@ let Output = (props: NativeStackScreenProps<NavigationConfig, 'Output'>) => {
     return (
         <ScrollView style={{ flex: 1 }}>
             <View style={styles.output}>
+                <Text style={styles.outputTip}>
+                    以下是轉換結果。若有問題，可回退到調整介面。
+                </Text>
                 <Text selectable={true}>{output}</Text>
                 <View style={styles.outputGoHomeButtonWrapper}>
-                    <Button title="返回首頁" onPress={goHome} />
+                    <TouchableNativeFeedback onPress={goHome}>
+                        <Text style={styles.outputGoHomeButton}>
+                            📝 回到主選單
+                        </Text>
+                    </TouchableNativeFeedback>
                 </View>
             </View>
         </ScrollView>
@@ -283,15 +308,17 @@ let Output = (props: NativeStackScreenProps<NavigationConfig, 'Output'>) => {
 let Stack = createNativeStackNavigator<NavigationConfig>()
 let App = () => {
     let opts: Record<keyof NavigationConfig, NativeStackNavigationOptions> = {
-        Home: { title: '💡 繁簡轉換' },
+        Home: { title: '真・繁簡轉換' },
+        About: { title: '軟體資訊' },
         Config: { title: '偏好設定' },
-        Input: { title: '待轉換內容' },
+        Input: { title: '轉換' },
         Adjust: { title: '調整', headerBackVisible: false },
         Output: { title: '轉換結果' }
     }
     return (<NavigationContainer>
         <Stack.Navigator>
             <Stack.Screen name="Home" component={Home} options={opts.Home} />
+            <Stack.Screen name="About" component={About} options={opts.About} />
             <Stack.Screen name="Config" component={Config} options={opts.Config} />
             <Stack.Screen name="Input" component={Input} options={opts.Input} />
             <Stack.Screen name="Adjust" component={Adjust} options={opts.Adjust} />

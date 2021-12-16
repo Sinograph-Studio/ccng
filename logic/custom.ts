@@ -5,6 +5,7 @@ export function WithCustomConfig(profile: Profile, config: string, options: { re
     config = config
         .replace(/\r\n/g, '\n')
         .replace(/[ \t　]+/g, ' ')
+        .replace(/，/g, ',')
         .replace(/^ +/g, '')
         .replace(/ +$/g, '')
         .replace(/ +,/g, ',')
