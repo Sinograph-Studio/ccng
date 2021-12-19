@@ -330,7 +330,7 @@ let Output = (props: NativeStackScreenProps<NavigationConfig, 'Output'>) => {
 let Stack = createNativeStackNavigator<NavigationConfig>()
 let App = () => {
     let opts: Record<keyof NavigationConfig, NativeStackNavigationOptions> = {
-        Home: { title: '真・繁簡轉換' },
+        Home: { title: '🔁  真・繁簡轉換' },
         About: { title: '軟體資訊' },
         Config: { title: '偏好設定' },
         Input: { title: '轉換' },
