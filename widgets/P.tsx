@@ -6,12 +6,7 @@ export function P(props: { children: string }): JSX.Element {
     return <Text style={styles.p}>{props.children}</Text>
 }
 export function A(props: { href: string, children: string }): JSX.Element {
-    return <TouchableNativeFeedback onPress={() => { (async () => {
-        let url = props.href
-        if (await Linking.canOpenURL(url)) {
-            Linking.openURL(url)
-        }
-    })() }} >
+    return <TouchableNativeFeedback onPress={() => { Linking.openURL(props.href) }} >
         <Text style={styles.a}>{props.children}</Text>
     </TouchableNativeFeedback>
 }
