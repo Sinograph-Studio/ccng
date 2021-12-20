@@ -1,4 +1,8 @@
 {
   "name": "ccng",
-  "displayName": "真・繁簡轉換"
+  "displayName": "真・繁簡轉換",
+  "react-native-google-ads": {
+    "android_app_id": "ca-app-pub-5052227606788762~4235113155",
+    "ios_app_id": "ca-app-pub-5052227606788762~4235113155"
+  }
 }
