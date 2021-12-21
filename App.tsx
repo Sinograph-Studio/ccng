@@ -75,7 +75,7 @@ let About = (_: NativeStackScreenProps<NavigationConfig, 'About'>) => {
         <ScrollView style={{ flex: 1 }}>
             <View style={styles.config}>
                 <Title>簡介</Title>
-                <P>真・繁簡轉換 (ccng) 是支持手工調整的繁簡轉換工具。開放原始碼，不提供任何担保。</P>
+                <P>真・繁簡轉換 (ccng) 是提供手工調整功能的繁簡轉換工具。開放原始碼，不提供任何担保。</P>
                 <P>支援簡轉繁，繁轉簡，可以手工調整一對多字和地域用語的轉換，異體字按台灣習慣處理；另有簡化字到日本新字體的轉換功能（用於恢復簡體化的日文）。</P>
                 <P>註：內建地域用語轉換僅覆蓋人名地名和部分專業領域。如有更多需要，可在「偏好設定」中添加額外的地域用語轉換表。</P>
                 <Sep/>
