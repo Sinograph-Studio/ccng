@@ -8,7 +8,7 @@ import { createNativeStackNavigator, NativeStackScreenProps, NativeStackNavigati
 import DefaultPreference from 'react-native-default-preference';
 // styles, widgets, logic
 import { styles } from './styles'
-import { Ad } from './widgets/Ad'
+import { AdInit, AdButton } from './widgets/Ad'
 import { P, A, Title, SmallTitle, Sep } from './widgets/P'
 import { SimpleList } from './widgets/SimpleList'
 import { Profile } from './logic/types'
@@ -56,16 +56,13 @@ let Home = (props: NativeStackScreenProps<NavigationConfig, 'Home'>) => {
         ]
     })()
     return (
-        <View style={{ flex: 1 }}>
-            <SimpleList style={{ flex: 1 }} data={menu} onItemClick={({link}) => link()}>
-                { (item) =>
-                    <Text style={{'color': 'hsl(0, 0%, 35%)','fontSize': 21}}>
-                        { item.title }
-                    </Text>
-                }
-            </SimpleList>
-            <Ad id="ca-app-pub-5052227606788762/9431599516" large={true} />
-        </View>
+        <SimpleList style={{ flex: 1 }} data={menu} onItemClick={({link}) => link()}>
+            { (item) =>
+                <Text style={{'color': 'hsl(0, 0%, 35%)','fontSize': 21}}>
+                    { item.title }
+                </Text>
+            }
+        </SimpleList>
     );
 }
 
@@ -154,7 +151,8 @@ let Input = (props: NativeStackScreenProps<NavigationConfig, 'Input'>) => {
                     placeholder="在這裡輸入原文"
                 />
                 <View style={styles.inputButtonWrapper}>
-                    <Button onPress={adjust} title="OK" />
+                    <AdButton onPress={adjust} title="OK"
+                        id="ca-app-pub-5052227606788762/6284661612" />
                 </View>
             </View>
         </ScrollView>
@@ -313,29 +311,29 @@ let Output = (props: NativeStackScreenProps<NavigationConfig, 'Output'>) => {
         })
     }
     return (
-        <View style={{ flex: 1 }}>
-            <ScrollView style={{ flex: 1, borderBottomWidth: 1, borderBottomColor: 'hsl(0, 0%, 75%)' }}>
-                <View style={styles.output}>
-                    <Text style={styles.outputTip}>
-                        以下是轉換結果。若有問題，可回退到調整介面。
-                    </Text>
-                    <Text selectable={true}>{output}</Text>
-                    <View style={styles.outputGoHomeButtonWrapper}>
-                        <TouchableNativeFeedback onPress={goHome}>
-                            <Text style={styles.outputGoHomeButton}>
-                                📝 回到主選單
-                            </Text>
-                        </TouchableNativeFeedback>
-                    </View>
+        <ScrollView style={{ flex: 1 }}>
+            <View style={styles.output}>
+                <Text style={styles.outputTip}>
+                    以下是轉換結果。若有問題，可回退到調整介面。
+                </Text>
+                <Text selectable={true}>{output}</Text>
+                <View style={styles.outputGoHomeButtonWrapper}>
+                    <TouchableNativeFeedback onPress={goHome}>
+                        <Text style={styles.outputGoHomeButton}>
+                            📝 回到主選單
+                        </Text>
+                    </TouchableNativeFeedback>
                 </View>
-            </ScrollView>
-            <Ad id="ca-app-pub-5052227606788762/3354767011" />
-        </View>
+            </View>
+        </ScrollView>
     )
 }
 
 let Stack = createNativeStackNavigator<NavigationConfig>()
 let App = () => {
+    useEffect(() => {
+        AdInit()
+    }, [])
     let opts: Record<keyof NavigationConfig, NativeStackNavigationOptions> = {
         Home: { title: '🔁  真・繁簡轉換' },
         About: { title: '軟體資訊' },
