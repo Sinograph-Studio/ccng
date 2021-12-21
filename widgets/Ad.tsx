@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { Platform, View, Text } from "react-native";
-import AdMob, { BannerAd, BannerAdSize, TestIds } from "@invertase/react-native-google-ads";
+import { View, Text } from "react-native"
+import AdMob, { BannerAd, BannerAdSize, TestIds, AdsConsent, AdsConsentStatus, AdsConsentDebugGeography } from '@invertase/react-native-google-ads'
 
+const PublisherID = 'pub-5052227606788762'
 
 let initRequested = false
 let initFinished = false
@@ -16,23 +17,38 @@ function init(notify: () => void) {
         return
     }
     initRequested = true
-    AdMob().initialize().then(_ => {
-        initFinished = true
+    ;(async () => {
+        // --------------
+        if (__DEV__) {
+            await AdsConsent.setDebugGeography(AdsConsentDebugGeography.EEA)
+        }
+        let consentInfo = await AdsConsent.requestInfoUpdate([PublisherID])
+        // console.log({ consentInfo })
+        if (consentInfo.isRequestLocationInEeaOrUnknown &&
+            consentInfo.status == AdsConsentStatus.UNKNOWN) {
+            await AdsConsent.showForm({
+                privacyPolicy: 'http://sinograph.club/privacy-policy.html',
+                withNonPersonalizedAds: true
+            })
+        }
+        // --------------
+        await AdMob().initialize()
         setTimeout(() => {
             for (let item of noitfyList) {
                 item()
             }
             noitfyList = []
-        }, 0)
-    })
+            initFinished = true
+        }, 3000)
+    })().catch(err => { console.log(err) })
 }
 
 export function Ad(props: { id: string, large?: boolean }) {
-    let id = Platform.isTesting? TestIds.BANNER: props.id
+    let id = (__DEV__)? TestIds.BANNER: props.id
     let [ok,setOk] = useState(false)
-    init(() => setOk(true))
+    init(() => { setOk(true) })
     return (
-        <View style={{ marginVertical: 48, marginHorizontal: 24 }}>
+        <View style={{ marginVertical: 24, marginHorizontal: 24 }}>
             {(ok)?
             <BannerAd
                     unitId={id}

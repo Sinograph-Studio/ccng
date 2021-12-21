@@ -314,7 +314,7 @@ let Output = (props: NativeStackScreenProps<NavigationConfig, 'Output'>) => {
     }
     return (
         <View style={{ flex: 1 }}>
-            <ScrollView style={{ flex: 1 }}>
+            <ScrollView style={{ flex: 1, borderBottomWidth: 1, borderBottomColor: 'hsl(0, 0%, 75%)' }}>
                 <View style={styles.output}>
                     <Text style={styles.outputTip}>
                         以下是轉換結果。若有問題，可回退到調整介面。
