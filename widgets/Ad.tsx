@@ -78,11 +78,16 @@ export function AdButton(props: { id: string, p?: number, title: string, onPress
     let title = props.title
     let onPress = () => {
         if (advertLoaded) {
-            if (Math.random() <= p) {
-                advert.show()
-            }
+            setAdvertLoaded(false)
+            ;(async () => {
+                if (Math.random() <= p) {
+                    await advert.show().catch(err => console.log(err))
+                }
+                props.onPress()
+            })()
+        } else {
+            props.onPress()
         }
-        props.onPress()
     }
     return <Button title={title} onPress={onPress} />
 }
